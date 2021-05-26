@@ -3,7 +3,12 @@
 {% block title "Accueil | " ~ parent() %}
 
 {% block body %}
-    <div class="container">
-        
+    <div class="jumbotron text-center">
+        <br>
+        <h1>Bienvenue chez <span class="text-primary">Immobilare</span></h1>
+        <br>
+        <p>Nous ne voulons que votre bien...</p>
+        <br><br>
+        <a href="{{path("show_all_properties")}}" type="button" class="btn btn-outline-primary">Une petite visite de courtoisie?</a>
     </div>
 {% endblock %}
