@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use Cocur\Slugify\Slugify;
 use App\Repository\PropertyRepository;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -108,6 +109,11 @@ class Property
         $this->title = $title;
 
         return $this;
+    }
+
+    public function getSlug()
+    {
+        return (new Slugify())->slugify($this->title);
     }
 
     public function getDescription(): ?string

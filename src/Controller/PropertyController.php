@@ -26,8 +26,10 @@ class PropertyController extends AbstractController
         $this->propertyRepository = $propertyRepository;
         $this->entityManager = $entityManager;
     }
+
     /**
      * @Route("/biens", name="show_all_properties")
+     * @return Response
      */
     public function index(): Response
     {
@@ -37,5 +39,24 @@ class PropertyController extends AbstractController
             'current_main' => 'show_all_properties',
             'properties' => $properties
         ]);
+    }
+    
+    /**
+     * @Route("/biens/{slug}-{id}", name="show_one_property", requirements={"slug": "[a-z0-9\-]*"})
+     * @return Response
+     */
+    public function show(Property $property, string $slug): Response
+    {
+        if ($property->getSlug() !== $slug)
+        {
+            return $this->redirectToRoute('show_one_property', [
+                'id' => $property->getId(),
+                'slug' => $property->getSlug()
+            ], 301);
+        }
+        return $this->render('property/show_one_property.html.twig', [
+            'property' => $property,
+            'current_main' => 'show_all_properties'
+            ]);
     }
 }
