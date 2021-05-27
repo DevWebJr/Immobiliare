@@ -13,8 +13,8 @@ class Property
 {
 
     const HEAT = [
-        0 => 'electric',
-        1 => 'gaz'
+        0 => 'Électrique',
+        1 => 'Gaz'
     ];
 
     /**
@@ -197,7 +197,12 @@ class Property
     {
         return $this->heat;
     }
-
+    
+    public function getHeatType(): string
+    {
+        return self::HEAT[$this->heat];
+    }
+    
     public function setHeat(int $heat): self
     {
         $this->heat = $heat;
