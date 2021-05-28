@@ -30,7 +30,7 @@ class AdminPropertyController extends AbstractController  {
     }
     
     /**
-     * @Route("/admin/edit/{id}", name="admin_property_edit")
+     * @Route("/admin/property/edit/{id}", name="admin_property_edit")
      * @return Response
      */
     public function edit(Property $property, Request $request)
@@ -41,6 +41,7 @@ class AdminPropertyController extends AbstractController  {
         if ($form->isSubmitted() && $form->isValid()) 
         {
             $this->entityManager->flush();
+            $this->addFlash('success', 'Le bien a été modifié.');
             return $this->redirectToRoute('show_all_properties'); 
         }
         
@@ -48,5 +49,46 @@ class AdminPropertyController extends AbstractController  {
             'property' => $property,
             'form' => $form->createView()
         ]);
+    }
+
+    
+    
+    /**
+     * @Route("/admin/property/create", name="admin_property_create")
+     * @return Response
+     */
+    public function new(Request $request)
+    {
+        $property = new Property();
+        
+        $form = $this->createForm(PropertyType::class,$property);
+        $form->handleRequest($request);
+        
+        if ($form->isSubmitted() && $form->isValid()) 
+        {
+            $this->entityManager->persist($property);
+            $this->entityManager->flush();
+            $this->addFlash('success', 'Le bien a été ajouté.');
+            return $this->redirectToRoute('show_all_properties'); 
+        }
+        
+        return $this->render('property/property_create.html.twig', [ 
+            'property' => $property,
+            'form' => $form->createView()
+        ]);
+    }
+    
+    /**
+     * @Route("/admin/property/delete/{id}", name="admin_property_delete", methods="DELETE")
+     */
+    public function delete(Property $property, Request $request)
+    {   
+        if($this->isCsrfTokenValid('delete'.$property->getId(), $request->get('_token')))
+        {
+            $this->entityManager->remove($property);
+            $this->entityManager->flush();
+            $this->addFlash('danger', 'Le bien a été supprimé.');
+        }       
+        return $this->redirectToRoute('show_all_properties');
     }
 }

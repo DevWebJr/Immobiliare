@@ -19,10 +19,19 @@
                         <td>{{property.title}}</td>
                         <td>
                             <a href="{{path('admin_property_edit', {id: property.id} )}}" class="btn btn-secondary">Éditer</a>
+                            <form method="post" action="{{path('admin_property_delete', {id: property.id})}}" style="display:inline-block;" onsubmit="return confirm('Êtes-vous certain?')">
+                                <input type="hidden" name="_method" value="DELETE">
+                                <input type="hidden" name="_token" value="{{csrf_token('delete' ~ property.id)}}">
+                                <button class="btn btn-danger">Supprimer</button>
+                            </form>
                         </td>
                     </tr>
                 {% endfor %}
             </tbody>
         </table>
+        
+        <div class="d-flex justify-content-center">
+            <a href="{{path('admin_property_create')}}" class="btn btn-primary">Ajouter un nouveau bien</a>
+        </div>
     </div>
 {% endblock %}
