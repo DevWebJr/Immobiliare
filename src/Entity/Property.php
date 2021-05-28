@@ -5,18 +5,21 @@ namespace App\Entity;
 use Cocur\Slugify\Slugify;
 use App\Repository\PropertyRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 /**
  * @ORM\Entity(repositoryClass=PropertyRepository::class)
+ * @UniqueEntity("title")
  */
 class Property
 {
-
+    
     const HEAT = [
         0 => 'Électrique',
         1 => 'Gaz'
     ];
-
+    
     /**
      * @ORM\Id
      * @ORM\GeneratedValue
@@ -33,9 +36,10 @@ class Property
      * @ORM\Column(type="text", nullable=true)
      */
     private $description;
-
+    
     /**
      * @ORM\Column(type="integer")
+     * @Assert\Range(min="10",max="400")
      */
     private $surface;
 
@@ -76,6 +80,7 @@ class Property
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Assert\Regex("/^[0-9]{5}$/")
      */
     private $postal_code;
 
