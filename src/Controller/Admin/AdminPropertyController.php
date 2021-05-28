@@ -2,16 +2,20 @@
 namespace App\Controller\Admin;
 
 use App\Entity\Property;
+use App\Form\PropertyType;
 use App\Repository\PropertyRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 class AdminPropertyController extends AbstractController  {
     
-    public function __construct(PropertyRepository $propertyRepository)
+    public function __construct(PropertyRepository $propertyRepository, EntityManagerInterface $entityManager)
     {
         $this->propertyRepository = $propertyRepository;
+        $this->entityManager = $entityManager;
     }
     
     /**
@@ -26,11 +30,23 @@ class AdminPropertyController extends AbstractController  {
     }
     
     /**
-     * @Route("/admin/{id}/edit", name="admin_property_edit")
+     * @Route("/admin/edit/{id}", name="admin_property_edit")
      * @return Response
      */
-    public function edit(Property $property)
+    public function edit(Property $property, Request $request)
     {
-        return $this->render('property/property_edit.html.twig', compact('property'));
+        $form = $this->createForm(PropertyType::class,$property);
+        $form->handleRequest($request);
+        
+        if ($form->isSubmitted() && $form->isValid()) 
+        {
+            $this->entityManager->flush();
+            return $this->redirectToRoute('show_all_properties'); 
+        }
+        
+        return $this->render('property/property_edit.html.twig', [ 
+            'property' => $property,
+            'form' => $form->createView()
+        ]);
     }
 }
